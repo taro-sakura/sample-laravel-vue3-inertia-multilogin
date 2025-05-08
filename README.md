@@ -5,11 +5,6 @@
 ### ■ envファイルの設置
 `$ cp webapp/.env.docker webapp/.env`
 
-### ■ 翻訳機能の有効化のためAPI KEYの設定
-webapp/.env の「DEEPL_API_KEY」 にDeepLで取得したAPI KEYを設定する。  
-DeepL API Free  
-https://www.deepl.com/ja/pro-api
-
 ### ■ dockerの初回起動
 `$ docker compose up -d --build`
 
