@@ -1,0 +1,66 @@
+services:
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: ./docker/apache/Dockerfile
+    ports:
+      - 80:80
+      - 5173:5173
+    environment:
+      COMPOSER_ALLOW_SUPERUSER: 1
+      TZ: Asia/Tokyo
+    volumes:
+      - ./webapp:/var/www/vhosts/webapp
+      - ./docker/apache/php.ini:/usr/local/etc/php/php.ini
+    depends_on:
+      - db
+    networks:
+      - net1
+  db:
+    container_name: db
+    build:
+      context: .
+      dockerfile: ./docker/db/Dockerfile
+    volumes:
+      - ./docker/data/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: docker
+      MYSQL_DATABASE: sample_db
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: 'Asia/Tokyo'
+    networks:
+      - net1
+    ports:
+      - 3306:3306
+  test_db:
+    container_name: test_db
+    build:
+      context: .
+      dockerfile: ./docker/db/Dockerfile
+    volumes:
+      - ./docker/data_test/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: docker
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: 'Asia/Tokyo'
+    networks:
+      - net1
+    ports:
+      - 3333:3306
+  mail:
+    container_name: mail
+    image: mailhog/mailhog
+    platform: linux/amd64
+    environment:
+      TZ: Asia/Tokyo
+    networks:
+      - net1
+    ports:
+      - 8025:8025
+      - 1025:1025
+networks:
+  net1:
