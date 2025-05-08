@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LogController;
 use App\Http\Controllers\Admin\SettingController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -31,6 +32,13 @@ Route::middleware([
 
 // 管理者用ルート
 Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', function () {
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('admin.login');
+    });
+
     Route::middleware(['guest:admin'])->group(function () {
         Route::get('login', [AuthenticatedSessionController::class, 'create'])
             ->name('login');
